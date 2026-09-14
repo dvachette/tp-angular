@@ -1,0 +1,6 @@
+.alert {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  border-radius: 0.5rem;
+}

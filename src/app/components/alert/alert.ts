@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, input } from '@angular/core';
 
 @Component({
   selector: 'iut-alert',
@@ -7,5 +7,5 @@ import { Component } from '@angular/core';
   styleUrl: './alert.css',
 })
 export class Alert {
-
+  public category = input.required<'validation' | 'error' | 'warning' | 'info'>()
 }

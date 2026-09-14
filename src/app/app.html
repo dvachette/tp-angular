@@ -2,7 +2,8 @@
       <h1>Hello, {{ title() }}</h1>
       <p>Congratulations! Your app is running !!! 🎉</p>
       <p>Compteur : {{counter()}}</p>
-      <iut-alert />
+      <iut-alert [category]="'error'">Message</iut-alert>
+      <iut-exercices [exercices]="exercices()"/>
 </main>
 
 <router-outlet />
