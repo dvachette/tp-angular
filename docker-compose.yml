@@ -1,0 +1,7 @@
+services:
+  fix-autoreload:
+    build: .
+    container_name: fix-autoreload
+    restart: unless-stopped
+    ports:
+      - "3060:80"
