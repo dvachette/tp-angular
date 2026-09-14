@@ -1,9 +1,11 @@
 <main class="main">
-      <h1>Hello, {{ title() }}</h1>
-      <p>Congratulations! Your app is running !!! 🎉</p>
-      <p>Compteur : {{counter()}}</p>
-      <iut-alert [category]="'error'">Message</iut-alert>
-      <iut-exercices [exercices]="exercices()"/>
+  <h1>Hello, {{ title() }}</h1>
+  <iut-exercices [exercices]="exercices()"/>
 </main>
+<div class="alerts">
+  @for(alertMessage of alertMessages(); track alertMessage.id) {
+    <iut-alert [category]="alertMessage.type" (dismiss)="dismissAlertMessage(alertMessage.id)">{{alertMessage.message}}</iut-alert>
+  }
+</div>
 
 <router-outlet />

@@ -4,3 +4,14 @@
   padding: 1rem;
   border-radius: 0.5rem;
 }
+.alert--on-dismiss {
+  transition: opacity 0.3s ease-out;
+  opacity: 0;
+}
+button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-left: auto;
+  font-size: 1.5rem;
+}

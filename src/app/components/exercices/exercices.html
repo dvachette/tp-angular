@@ -1,13 +1,15 @@
 <div class="exercices">
   <h2>Exercices</h2>
+  <div class="exercices--content">
   @for(exercice of exercices(); track $index) {
     <div class="exercice">
       <h3>{{exercice.title}}</h3>
       <p>id: {{exercice.id}}</p>
-      <p>A faire pour le {{exercice.dueDate.toDateString()}}</p>
+      <p>A faire pour le {{exercice.dueDate.toISOString() | date : 'd MMMM y' : '' : 'fr-FR'}}</p>
       <p>Rendu: {{exercice.submitted ? 'Oui' : 'Non'}}</p>
     </div>
   } @empty {
     <h3>Plus rien à faire. Chorée time ?</h3>
   }
+  </div>
 </div>

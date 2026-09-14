@@ -1,19 +1,17 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { Alert } from "./components/alert/alert";
 import { Exercices } from "./components/exercices/exercices";
 import { ExerciceModel } from './models/ExerciceModel';
-
+import { MessageModel } from './models/MessageModel';
+import { Alert } from "./components/alert/alert";
 @Component({
   selector: 'iut-root',
-  imports: [RouterOutlet, Alert, Exercices],
+  imports: [RouterOutlet, Exercices, Alert],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
 export class App {
-  protected readonly title = signal('donatien-forst-project');
-  private readonly maxCounter = 10
-  protected readonly counter = signal<number>(this.maxCounter)
+  protected readonly title = signal('donatien-first-project');
   public readonly exercices = signal<ExerciceModel[]>([
     {
       id: '1',
@@ -34,7 +32,45 @@ export class App {
       submitted: false
     },
   ]);
+  public readonly alertMessages = signal<MessageModel[]>([]);
   constructor() {
-    setInterval(() => { this.counter.set((this.counter() + 1) % this.maxCounter) }, 1000)
+    this.alertMessages.set(this.exercices().map((exercice, index) => {
+      return {
+        id: index,
+        type: this.getAlertType(exercice),
+        message: this.getAlertMessage(exercice)
+      };
+    }));
+  }
+  dismissAlertMessage(id: number): void {
+    this.alertMessages.set(this.alertMessages().filter(message => message.id !== id));
+  }
+  getAlertMessage(exercice: ExerciceModel): string {
+    if (exercice.submitted) {
+      return 'Vous avez déjà rendu l\'exercice';
+    } else {
+      const now = new Date();
+      if (now > exercice.dueDate) {
+        return 'Vous n\'avez pas rendu l\'exercice à temps !';
+      } else if ((exercice.dueDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24) <= 1) { // less than or equal to 1 day
+        return 'Vous n\'avez pas encore rendu l\'exercice, il est dû demain !';
+      } else {
+        return 'Vous n\'avez pas encore rendu l\'exercice.';
+      }
+    }
+  }
+  getAlertType(exercice: ExerciceModel): 'info' | 'warning' | 'error' | 'validation' {
+    if (exercice.submitted) {
+      return 'validation';
+    } else {
+      const now = new Date();
+      if (now > exercice.dueDate) {
+        return 'error';
+      } else if ((exercice.dueDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24) <= 1) { // less than or equal to 1 day
+        return 'warning';
+      } else {
+        return 'info';
+      }
+    }
   }
 }

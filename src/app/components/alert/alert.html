@@ -1,3 +1,4 @@
-<div [className]="`alert category--${category()}`">
+<div [className]="`alert category--${category()} ${onDismiss() ? 'alert--on-dismiss' : ''}`">
   <p><ng-content /></p>
+  <button (click)="dismissAlert()">&cross;</button>
 </div>
