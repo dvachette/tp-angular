@@ -4,9 +4,10 @@ import { Exercices } from "./components/exercices/exercices";
 import { ExerciceModel } from './models/ExerciceModel';
 import { MessageModel } from './models/MessageModel';
 import { Alert } from "./components/alert/alert";
+import { ReversePipe } from './pipes/reverse-pipe';
 @Component({
   selector: 'iut-root',
-  imports: [RouterOutlet, Exercices, Alert],
+  imports: [RouterOutlet, Exercices, Alert, ReversePipe],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
