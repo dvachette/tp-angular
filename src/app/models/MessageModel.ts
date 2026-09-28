@@ -1,5 +1,6 @@
 export interface MessageModel {
-  type: 'info' | 'warning' | 'error' | 'validation',
+  type: MessageType,
   message: string,
   id: number,
 }
+export type MessageType = 'info' | 'warning' | 'error' | 'validation'

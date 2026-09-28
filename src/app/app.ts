@@ -1,10 +1,11 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Exercices } from "./components/exercices/exercices";
 import { ExerciceModel } from './models/ExerciceModel';
 import { MessageModel } from './models/MessageModel';
 import { Alert } from "./components/alert/alert";
 import { ReversePipe } from './pipes/reverse-pipe';
+import { MessagesService } from './services/messages-service';
 @Component({
   selector: 'iut-root',
   imports: [RouterOutlet, Exercices, Alert, ReversePipe],
@@ -13,6 +14,7 @@ import { ReversePipe } from './pipes/reverse-pipe';
 })
 export class App {
   protected readonly title = signal('donatien-first-project');
+  private readonly messageService = inject(MessagesService)
   public readonly exercices = signal<ExerciceModel[]>([
     {
       id: '1',
@@ -33,18 +35,12 @@ export class App {
       submitted: false
     },
   ]);
-  public readonly alertMessages = signal<MessageModel[]>([]);
+  public readonly alertMessages = this.messageService.tabMessages
   constructor() {
-    this.alertMessages.set(this.exercices().map((exercice, index) => {
-      return {
-        id: index,
-        type: this.getAlertType(exercice),
-        message: this.getAlertMessage(exercice)
-      };
-    }));
+    this.messageService.fillWithExample()
   }
   dismissAlertMessage(id: number): void {
-    this.alertMessages.set(this.alertMessages().filter(message => message.id !== id));
+    this.messageService.remove(id)
   }
   getAlertMessage(exercice: ExerciceModel): string {
     if (exercice.submitted) {
