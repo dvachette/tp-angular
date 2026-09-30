@@ -3,9 +3,12 @@
   align-items: center;
   padding: 1rem;
   border-radius: 0.5rem;
+  transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+}
+.alert--on-create {
+  transform: translateX(100%);
 }
 .alert--on-dismiss {
-  transition: opacity 0.3s ease-out;
   opacity: 0;
 }
 button {

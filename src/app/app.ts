@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Exercices } from "./components/exercices/exercices";
 import { ExerciceModel } from './models/ExerciceModel';
@@ -6,13 +6,14 @@ import { MessageModel } from './models/MessageModel';
 import { Alert } from "./components/alert/alert";
 import { ReversePipe } from './pipes/reverse-pipe';
 import { MessagesService } from './services/messages-service';
+import { filter, interval, map, take, tap } from 'rxjs';
 @Component({
   selector: 'iut-root',
   imports: [RouterOutlet, Exercices, Alert, ReversePipe],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
-export class App {
+export class App implements OnInit {
   protected readonly title = signal('donatien-first-project');
   private readonly messageService = inject(MessagesService)
   public readonly exercices = signal<ExerciceModel[]>([
@@ -36,8 +37,13 @@ export class App {
     },
   ]);
   public readonly alertMessages = this.messageService.tabMessages
-  constructor() {
-    this.messageService.fillWithExample()
+  ngOnInit() {
+    interval(1000).pipe(
+      map((x) => x * 2),
+      filter(x => x > 10),
+      take(4),
+      tap(() => this.messageService.add("reactive", "info"))
+    ).subscribe((value) => console.log(value))
   }
   dismissAlertMessage(id: number): void {
     this.messageService.remove(id)
