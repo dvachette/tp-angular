@@ -1,8 +1,9 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Observable, tap } from 'rxjs';
+import { map, Observable, tap } from 'rxjs';
 import { ExerciceModel } from '../models/ExerciceModel';
 import { LoggingService } from './logging-service';
+import { ExerciceDto } from '../models/ExerciceDto';
 
 @Injectable({
   providedIn: 'root',
@@ -15,8 +16,13 @@ export class ExerciceService {
   private readonly exercices = signal<ExerciceModel[]>([]);
   public readonly tabExercices = this.exercices.asReadonly();
 
+  private static toModel(dto: ExerciceDto): ExerciceModel {
+    return { ...dto, dueDate: new Date(dto.dueDate) };
+  }
+
   public load(): Observable<ExerciceModel[]> {
-    return this.httpService.get<ExerciceModel[]>(this.API_URL).pipe(
+    return this.httpService.get<ExerciceDto[]>(this.API_URL).pipe(
+      map((dtos: ExerciceDto[]) => dtos.map(ExerciceService.toModel)),
       tap({
         next: (data: ExerciceModel[]) => {
           this.exercices.set(data);
@@ -30,7 +36,8 @@ export class ExerciceService {
   }
 
   public getExerciceById(id: string): Observable<ExerciceModel> {
-    return this.httpService.get<ExerciceModel>(`${this.API_URL}/${id}`).pipe(
+    return this.httpService.get<ExerciceDto>(`${this.API_URL}/${id}`).pipe(
+      map(ExerciceService.toModel),
       tap({
         next: (data: ExerciceModel) => {
           this.loggingService.log(`Exercice fetched successfully: ${data.title}.`);
