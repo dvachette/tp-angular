@@ -7,6 +7,8 @@ import { Alert } from "./components/alert/alert";
 import { ReversePipe } from './pipes/reverse-pipe';
 import { MessagesService } from './services/messages-service';
 import { filter, interval, map, take, tap } from 'rxjs';
+import { ExerciceService } from './services/exercices-service';
+import { HttpErrorResponse } from '@angular/common/http';
 @Component({
   selector: 'iut-root',
   imports: [RouterOutlet, Exercices, Alert, ReversePipe],
@@ -16,35 +18,23 @@ import { filter, interval, map, take, tap } from 'rxjs';
 export class App implements OnInit {
   protected readonly title = signal('donatien-first-project');
   private readonly messageService = inject(MessagesService)
-  public readonly exercices = signal<ExerciceModel[]>([
-    {
-      id: '1',
-      title: 'intro Typescript',
-      dueDate: new Date(2025, 9, 27),
-      submitted: true
-    },
-    {
-      id: '2',
-      title: 'démarrage du joli gestionnaire de devoirs',
-      dueDate: new Date(2025, 11, 3),
-      submitted: false
-    },
-    {
-      id: '3',
-      title: 'ajout d\'un routeur',
-      dueDate: new Date(2025, 12, 22),
-      submitted: false
-    },
-  ]);
+  private readonly exercisesService = inject(ExerciceService)
   public readonly alertMessages = this.messageService.tabMessages
+  public readonly exercices = this.exercisesService.tabExercices
   ngOnInit() {
     interval(1000).pipe(
       map((x) => x * 2),
       filter(x => x > 10),
       take(4),
-      tap(() => this.messageService.add("reactive", "info"))
+      tap(() => this.messageService.add("Hey from pipe", "info"))
     ).subscribe((value) => console.log(value))
+    this.exercisesService.load().subscribe({
+      error: (error: HttpErrorResponse) => {
+        this.messageService.add(`Error fetching exercices: ${error.message}`, "error");
+      },
+    });
   }
+
   dismissAlertMessage(id: number): void {
     this.messageService.remove(id)
   }
